@@ -16,6 +16,12 @@ import com.stacktips.view.CalendarListener;
 import com.stacktips.view.CustomCalendarView;
 import com.stacktips.view.DayView;
 import com.stacktips.view.utils.CalendarUtils;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,6 +39,10 @@ import java.util.Locale;
  */
 public class MoviesFragment extends Fragment {
     CustomCalendarView calendarView;
+    final String RED = "#ff0000";
+    final String YELLOW = "#ffff00";
+    final String GREEN = "#00ff00";
+    final String WHITE = "#ffffff";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -166,7 +176,31 @@ public class MoviesFragment extends Fragment {
 //                int color = Color.parseColor("#a9afb9");
 //                dayView.setBackgroundColor(color);
 //            }
-            
+
+            try (BufferedReader br = new BufferedReader(new FileReader("data.txt"))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    // process the line.
+                    DateFormat formatter = new SimpleDateFormat("ddmmyy");
+                    Date date = formatter.parse(line.substring(0, 6));
+                    int color = Color.parseColor(WHITE);
+                    if (dayView.getDate().equals(date)) {
+                        switch (line.charAt(6)) {
+                            case 'r':
+                                color = Color.parseColor(RED);
+                                break;
+                            case 'y':
+                                color = Color.parseColor(YELLOW);
+                                break;
+                            case 'g':
+                                color = Color.parseColor(GREEN);
+                                break;
+                        }
+                        dayView.setBackgroundColor(color);
+                    }
+                }
+            } catch (Exception ex) {}
+
         }
     }
 }
