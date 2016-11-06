@@ -20,7 +20,18 @@ import android.widget.TextView;
 import com.cardiomood.android.controls.gauge.SpeedometerGauge;
 
 import com.example.minhbreaker.distract.R;
+import com.example.minhbreaker.distract.other.DateColor;
+import com.stacktips.view.DayDecorator;
+import com.stacktips.view.DayView;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,6 +52,11 @@ public class HomeFragment extends Fragment {
     List<UsageStats> queryUsageStats;
     PackageManager packageManager;
     String report;
+    final String RED = "#ff0000";
+    final String YELLOW = "#ffff00";
+    final String GREEN = "#00ff00";
+    final String WHITE = "#ffffff";
+    static ArrayList<DateColor> dateColorArrayList;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -143,6 +159,31 @@ public class HomeFragment extends Fragment {
         }
         TextView textView2 = (TextView) getView().findViewById (R.id.top5apps);
         textView2.setText(report);
+
+        dateColorArrayList = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(getContext().getFilesDir(),"data.txt")))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                // process the line.
+
+                String date = line.substring(0, 6);
+                int color = Color.parseColor(WHITE);
+                switch (line.charAt(6)) {
+                    case 'r':
+                        color = Color.parseColor(RED);
+                        break;
+                    case 'y':
+                        color = Color.parseColor(YELLOW);
+                        break;
+                    case 'g':
+                        color = Color.parseColor(GREEN);
+                        break;
+                }
+                dateColorArrayList.add(new DateColor(date,color));
+            }
+        } catch (Exception ex) {
+            System.out.println("file not found");
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
