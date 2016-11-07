@@ -1,5 +1,6 @@
 package com.example.minhbreaker.distract.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +8,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.minhbreaker.distract.R;
 
@@ -23,7 +27,8 @@ public class NotificationsFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    static double goal;
+    static double unhealthy;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -105,5 +110,38 @@ public class NotificationsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        final Button button = (Button) getView().findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                updateGoal();
+            }
+        });
+    }
+
+    public void updateGoal() {
+        EditText editText = (EditText) getView().findViewById(R.id.editText);
+        try {
+            goal = Double.parseDouble(editText.getText().toString());
+        } catch (NumberFormatException ex) {
+            goal = 2;
+        }
+        EditText editText1 = (EditText) getView().findViewById(R.id.editText1);
+        try {
+            unhealthy = Double.parseDouble(editText1.getText().toString());
+        } catch (NumberFormatException ex) {
+            unhealthy = goal+2;
+        }
+        Activity mActivity=this.getActivity();
+        if (unhealthy<=goal) {
+            unhealthy = goal+2;
+            Toast.makeText(mActivity,"Minimum unhealthy limit cannot be less than maximum healthy limit", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(mActivity,"Goals updated", Toast.LENGTH_SHORT).show();
+        }
     }
 }

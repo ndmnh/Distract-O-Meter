@@ -5,9 +5,43 @@
     tools:context="com.example.minhbreaker.distract.fragment.NotificationsFragment">
 
     <!-- TODO: Update blank fragment layout -->
+
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_width="295dp"
+        android:layout_height="61dp"
+        android:text="Set a goal for maximum healthy daily usage"
+        android:id="@+id/textView"
+        android:layout_gravity="left|top" />
+
+    <EditText
+        android:layout_width="94dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editText"
+        android:layout_gravity="right|top"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update goal"
+        android:id="@+id/button"
+        android:layout_gravity="right|bottom" />
+
+    <TextView
+        android:layout_width="295dp"
+        android:layout_height="61dp"
+        android:text="Set a goal for minimum unhealthy daily usage"
+        android:id="@+id/textView1"
+        android:layout_gravity="left|center_vertical"
+        android:layout_below="@+id/textView"/>
+
+    <EditText
+        android:layout_width="94dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editText1"
+        android:layout_gravity="right|center_vertical" />
 
 </FrameLayout>

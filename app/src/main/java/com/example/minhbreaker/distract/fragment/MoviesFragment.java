@@ -1,5 +1,6 @@
 package com.example.minhbreaker.distract.fragment;
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -32,6 +33,10 @@ import java.util.Locale;
  */
 public class MoviesFragment extends Fragment {
     CustomCalendarView calendarView;
+    final String RED = "#ff0000";
+    final String YELLOW = "#ffff00";
+    final String GREEN = "#00ff00";
+    final String WHITE = "#ffffff";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -162,12 +167,15 @@ public class MoviesFragment extends Fragment {
     private class TrackedColorDecorator implements DayDecorator {
         @Override
         public void decorate(DayView dayView) {
-            for (DateColor dateColor:HomeFragment.dateColorArrayList) {
-                if (new SimpleDateFormat("ddMMyy").format(dayView.getDate()).equals(dateColor.getDate())) {
-                    dayView.setBackgroundColor(dateColor.getColor());
-                }
-            }
-//            String timeStamp = new SimpleDateFormat("EEEE").format(dayView.getDate());
+//            for (DateColor dateColor:HomeFragment.dateColorArrayList) {
+//                if (new SimpleDateFormat("ddMMyy").format(dayView.getDate()).equals(dateColor.getDate())) {
+//                    dayView.setBackgroundColor(dateColor.getColor());
+//                }
+//            }
+            String timeStamp = new SimpleDateFormat("EEEE").format(dayView.getDate());
+            if (timeStamp.charAt(0)=='M') dayView.setBackgroundColor(Color.parseColor(RED));
+            else if (timeStamp.charAt(0)=='T') dayView.setBackgroundColor(Color.parseColor(GREEN));
+            else if (timeStamp.charAt(0)=='S') dayView.setBackgroundColor(Color.parseColor(YELLOW));
         }
     }
 }

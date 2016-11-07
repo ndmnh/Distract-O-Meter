@@ -1,6 +1,7 @@
 package com.example.minhbreaker.distract.fragment;
 
 import android.app.AppOpsManager;
+import android.app.NotificationManager;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,16 +23,10 @@ import com.cardiomood.android.controls.gauge.SpeedometerGauge;
 
 import com.example.minhbreaker.distract.R;
 import com.example.minhbreaker.distract.other.DateColor;
-import com.stacktips.view.DayDecorator;
-import com.stacktips.view.DayView;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -109,6 +105,10 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onStart() {
+        double healthyMax=NotificationsFragment.goal;
+        double unhealthyMin=NotificationsFragment.unhealthy;
+        if (healthyMax==0) healthyMax=2;
+        if (unhealthyMin<=healthyMax) unhealthyMin=healthyMax+1;
         super.onStart();
         speedometer = (SpeedometerGauge) getView().findViewById(R.id.speedometer);
         speedometer.setMaxSpeed(50);
@@ -118,14 +118,36 @@ public class HomeFragment extends Fragment {
                 return String.valueOf((int) Math.round(progress));
             }
         });
-        speedometer.setMaxSpeed(50);
+
+        speedometer.setMaxSpeed(unhealthyMin+1);
         speedometer.setMajorTickStep(5);
         speedometer.setMinorTicks(4);
-        speedometer.addColoredRange(0, 30, Color.GREEN);
-        speedometer.addColoredRange(30, 45, Color.YELLOW);
-        speedometer.addColoredRange(45, 50, Color.RED);
-        speedometer.setSpeed(33, 1000, 300);
+        speedometer.addColoredRange(0, healthyMax, Color.GREEN);
+        speedometer.addColoredRange(healthyMax, unhealthyMin, Color.YELLOW);
+        speedometer.addColoredRange(unhealthyMin, unhealthyMin+1, Color.RED);
 
+        double currentUsage = 2.3;
+        speedometer.setSpeed(currentUsage,true);
+        if (currentUsage >= healthyMax){
+            int mNotificationId = 001;
+            NotificationManager mNotifyMgr =
+                    (NotificationManager) getContext().getSystemService(getContext().NOTIFICATION_SERVICE);
+            NotificationCompat.Builder mBuilder;
+            if (currentUsage < unhealthyMin) {
+                mBuilder =
+                        new NotificationCompat.Builder(getContext())
+                                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                                .setContentTitle("Healthy usage limit exceeded")
+                                .setContentText("Please reduce usage of your phone");
+            } else {
+                mBuilder =
+                        new NotificationCompat.Builder(getContext())
+                                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                                .setContentTitle("Phone usage reached an unhealthy range")
+                                .setContentText("Please reduce usage of your phone");
+            }
+            mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        }
         if (hasPermission()) System.out.println("Permission granted");
         else startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
 
