@@ -107,7 +107,7 @@ public class HomeFragment extends Fragment {
     public void onStart() {
         double healthyMax=NotificationsFragment.goal;
         double unhealthyMin=NotificationsFragment.unhealthy;
-        if (healthyMax==0) healthyMax=2;
+        if (healthyMax==0) healthyMax=3;
         if (unhealthyMin<=healthyMax) unhealthyMin=healthyMax+1;
         super.onStart();
         speedometer = (SpeedometerGauge) getView().findViewById(R.id.speedometer);
@@ -143,7 +143,7 @@ public class HomeFragment extends Fragment {
                 mBuilder =
                         new NotificationCompat.Builder(getContext())
                                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
-                                .setContentTitle("Phone usage reached an unhealthy range")
+                                .setContentTitle("Unhealthy phone usage")
                                 .setContentText("Please reduce usage of your phone");
             }
             mNotifyMgr.notify(mNotificationId, mBuilder.build());
