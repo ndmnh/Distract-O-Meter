@@ -15,6 +15,7 @@ import com.stacktips.view.DayDecorator;
 import com.stacktips.view.CalendarListener;
 import com.stacktips.view.CustomCalendarView;
 import com.stacktips.view.DayView;
+import com.stacktips.view.utils.CalendarUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -173,9 +174,14 @@ public class MoviesFragment extends Fragment {
 //                }
 //            }
             String timeStamp = new SimpleDateFormat("EEEE").format(dayView.getDate());
-            if (timeStamp.charAt(0)=='M') dayView.setBackgroundColor(Color.parseColor(RED));
-            else if (timeStamp.charAt(0)=='T') dayView.setBackgroundColor(Color.parseColor(GREEN));
-            else if (timeStamp.charAt(0)=='S') dayView.setBackgroundColor(Color.parseColor(YELLOW));
+            if (CalendarUtils.isPastDay(dayView.getDate())) {
+                if (timeStamp.charAt(0) == 'M')
+                    dayView.setBackgroundColor(Color.parseColor(RED));
+                else if (timeStamp.charAt(0) == 'T')
+                    dayView.setBackgroundColor(Color.parseColor(GREEN));
+                else if (timeStamp.charAt(0) == 'S')
+                    dayView.setBackgroundColor(Color.parseColor(YELLOW));
+            }
         }
     }
 }

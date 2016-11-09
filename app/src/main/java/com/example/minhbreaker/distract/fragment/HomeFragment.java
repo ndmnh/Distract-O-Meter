@@ -148,10 +148,14 @@ public class HomeFragment extends Fragment {
             }
             mNotifyMgr.notify(mNotificationId, mBuilder.build());
         }
-        if (hasPermission()) System.out.println("Permission granted");
-        else startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
 
-        report = "Top 5 used apps are:\n";
+//        if (hasPermission()) System.out.println("Permission granted");
+//        else {
+//            System.out.println("Permission not granted");
+//            startActivity(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS));
+//        }
+
+        report = "Top 5 used apps today are:\n";
 
         packageManager = getContext().getPackageManager();
 
@@ -160,10 +164,10 @@ public class HomeFragment extends Fragment {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_WEEK, -1);
         queryUsageStats = mUsageStatsManager
-                .queryUsageStats(UsageStatsManager.INTERVAL_BEST,getStartOfDay(new Date()).getTime(), System.currentTimeMillis());
+                .queryUsageStats(UsageStatsManager.INTERVAL_DAILY,0, System.currentTimeMillis());
 
         Collections.sort(queryUsageStats, UsageStatsComparator);
-
+        System.out.println(queryUsageStats.size());
         for (int i=0;i<5;i++) {
             UsageStats usageStats = queryUsageStats.get(i);
             String packageName = usageStats.getPackageName();
@@ -175,37 +179,35 @@ public class HomeFragment extends Fragment {
             }
             String applicationName = (String) (applicationInfo != null ? packageManager.getApplicationLabel(applicationInfo) : "(unknown)");
             long duration = usageStats.getTotalTimeInForeground();
-            System.out.println(applicationName);
-            System.out.println(duration);
             report+=Integer.toString(i+1)+". "+applicationName+": "+Long.toString(duration/60000)+" minutes.\n";
         }
         TextView textView2 = (TextView) getView().findViewById (R.id.top5apps);
         textView2.setText(report);
 
-        dateColorArrayList = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(new File(getContext().getFilesDir(),"data.txt")))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                // process the line.
-
-                String date = line.substring(0, 6);
-                int color = Color.parseColor(WHITE);
-                switch (line.charAt(6)) {
-                    case 'r':
-                        color = Color.parseColor(RED);
-                        break;
-                    case 'y':
-                        color = Color.parseColor(YELLOW);
-                        break;
-                    case 'g':
-                        color = Color.parseColor(GREEN);
-                        break;
-                }
-                dateColorArrayList.add(new DateColor(date,color));
-            }
-        } catch (Exception ex) {
-            System.out.println("file not found");
-        }
+//        dateColorArrayList = new ArrayList<>();
+//        try (BufferedReader br = new BufferedReader(new FileReader(new File(getContext().getFilesDir(),"data.txt")))) {
+//            String line;
+//            while ((line = br.readLine()) != null) {
+//                // process the line.
+//
+//                String date = line.substring(0, 6);
+//                int color = Color.parseColor(WHITE);
+//                switch (line.charAt(6)) {
+//                    case 'r':
+//                        color = Color.parseColor(RED);
+//                        break;
+//                    case 'y':
+//                        color = Color.parseColor(YELLOW);
+//                        break;
+//                    case 'g':
+//                        color = Color.parseColor(GREEN);
+//                        break;
+//                }
+//                dateColorArrayList.add(new DateColor(date,color));
+//            }
+//        } catch (Exception ex) {
+//            System.out.println("file not found");
+//        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
